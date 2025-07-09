@@ -6,8 +6,8 @@ from typing import Any
 
 __version__ = "0.1.0"
 
-from src.celeste_audio_intelligence.base import BaseAudioClient
-from src.celeste_audio_intelligence.core.enums import AudioIntelligenceProvider
+from celeste_audio_intelligence.base import BaseAudioClient
+from celeste_audio_intelligence.core.enums import AudioIntelligenceProvider
 
 SUPPORTED_PROVIDERS = [
     "google",

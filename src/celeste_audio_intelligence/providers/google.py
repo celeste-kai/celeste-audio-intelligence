@@ -3,10 +3,10 @@ from typing import Any, AsyncIterator, Optional
 from celeste_client.core.enums import GeminiModel
 from google import genai
 
-from src.celeste_audio_intelligence import BaseAudioClient
-from src.celeste_audio_intelligence.core.config import GOOGLE_API_KEY
-from src.celeste_audio_intelligence.core.enums import AudioIntelligenceProvider
-from src.celeste_audio_intelligence.core.types import AIResponse, AIUsage, AudioFile
+from celeste_audio_intelligence import BaseAudioClient
+from celeste_audio_intelligence.core.config import GOOGLE_API_KEY
+from celeste_audio_intelligence.core.enums import AudioIntelligenceProvider
+from celeste_audio_intelligence.core.types import AIResponse, AIUsage, AudioFile
 
 
 class GoogleAudioClient(BaseAudioClient):

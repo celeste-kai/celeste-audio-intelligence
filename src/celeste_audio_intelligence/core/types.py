@@ -3,7 +3,7 @@ from typing import Any, Dict, Optional
 
 from pydantic import BaseModel, ConfigDict
 
-from src.celeste_audio_intelligence.core.enums import AudioIntelligenceProvider
+from celeste_audio_intelligence.core.enums import AudioIntelligenceProvider
 
 
 class AudioFile(BaseModel):

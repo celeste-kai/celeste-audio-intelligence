@@ -4,13 +4,13 @@ from pathlib import Path
 import streamlit as st
 from celeste_client.core.enums import GeminiModel
 
-from src.celeste_audio_intelligence import create_audio_client
-from src.celeste_audio_intelligence.core.enums import (
+from celeste_audio_intelligence import create_audio_client
+from celeste_audio_intelligence.core.enums import (
     AudioIntelligenceProvider,
     AudioMimeType,
     OpenAIAudioModel,
 )
-from src.celeste_audio_intelligence.core.types import AudioFile
+from celeste_audio_intelligence.core.types import AudioFile
 
 st.title("🎵 Audio Intelligence")
 

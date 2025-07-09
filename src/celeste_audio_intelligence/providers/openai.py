@@ -2,13 +2,13 @@ from typing import Any, AsyncIterator, Optional
 
 import openai
 
-from src.celeste_audio_intelligence import BaseAudioClient
-from src.celeste_audio_intelligence.core.config import OPENAI_API_KEY
-from src.celeste_audio_intelligence.core.enums import (
+from celeste_audio_intelligence import BaseAudioClient
+from celeste_audio_intelligence.core.config import OPENAI_API_KEY
+from celeste_audio_intelligence.core.enums import (
     AudioIntelligenceProvider,
     OpenAIAudioModel,
 )
-from src.celeste_audio_intelligence.core.types import AIResponse, AIUsage, AudioFile
+from celeste_audio_intelligence.core.types import AIResponse, AIUsage, AudioFile
 
 
 class OpenAIAudioClient(BaseAudioClient):
