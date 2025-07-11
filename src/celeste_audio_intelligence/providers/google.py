@@ -1,17 +1,16 @@
 from typing import Any, AsyncIterator, Optional
 
-from celeste_client.core.enums import GeminiModel
 from google import genai
 
 from celeste_audio_intelligence import BaseAudioClient
 from celeste_audio_intelligence.core.config import GOOGLE_API_KEY
-from celeste_audio_intelligence.core.enums import AudioIntelligenceProvider
+from celeste_audio_intelligence.core.enums import AudioIntelligenceProvider, GoogleAudioModel
 from celeste_audio_intelligence.core.types import AIResponse, AIUsage, AudioFile
 
 
 class GoogleAudioClient(BaseAudioClient):
     def __init__(
-        self, model: str = GeminiModel.FLASH_LITE.value, **kwargs: Any
+        self, model: str = GoogleAudioModel.FLASH_LITE.value, **kwargs: Any
     ) -> None:
         self.client = genai.Client(api_key=GOOGLE_API_KEY)
         self.model_name = model
