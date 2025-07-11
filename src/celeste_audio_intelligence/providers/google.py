@@ -25,6 +25,7 @@ class GoogleAudioClient(BaseAudioClient):
         response = await self.client.aio.models.generate_content(
             model=self.model_name,
             contents=[prompt, audio],
+            **kwargs,
         )
 
         # Convert usage data if available
@@ -48,7 +49,7 @@ class GoogleAudioClient(BaseAudioClient):
 
         last_usage_metadata = None
         async for chunk in await self.client.aio.models.generate_content_stream(
-            model=self.model_name, contents=[prompt, audio]
+            model=self.model_name, contents=[prompt, audio], **kwargs
         ):
             if chunk.text:  # Only yield if there's actual content
                 yield AIResponse(
