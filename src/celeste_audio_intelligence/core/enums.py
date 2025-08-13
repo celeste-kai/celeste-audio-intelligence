@@ -12,17 +12,11 @@ class AudioMimeType(Enum):
     FLAC = "audio/flac"
 
 
-class AudioIntelligenceProvider(Enum):
-    """AI provider enumeration for audio intelligence support."""
-
-    GOOGLE = "google"
-    OPENAI = "openai"
-
-
 class OpenAIAudioModel(Enum):
     WHISPER = "whisper-1"
     GPT_4O_TRANSCRIBE = "gpt-4o-transcribe"
     GPT_4O_MINI_TRANSCRIBE = "gpt-4o-mini-transcribe"
+
 
 class GoogleAudioModel(Enum):
     FLASH_LITE = "gemini-2.5-flash-lite-preview-06-17"

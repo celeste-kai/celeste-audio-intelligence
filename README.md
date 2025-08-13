@@ -55,7 +55,7 @@ response = await client.generate_content(
 )
 
 print(response.text)  # AI-generated summary
-print(response.usage)  # Token usage for cost tracking
+# Usage accounting is temporarily removed and will be reintroduced later
 ```
 
 ## 📦 Installation
@@ -158,7 +158,8 @@ streamlit run example.py
 ## 🗺️ Roadmap
 
 ### Celeste-Audio-Intelligence Next Steps
-- [x] 📝 **Core Types** - AudioFile, AIResponse, and Usage types
+- [x] 📝 **Core Types** - AudioFile and AIResponse
+- [ ] 📊 **Usage Accounting** - Deferred; will be reintroduced later across modalities
 - [x] 🌈 **Google Provider** - Gemini 2.5 models implementation
 - [x] 🤖 **OpenAI Provider** - Whisper and GPT-4o support
 - [ ] 🌊 **Mistral Provider** - Audio intelligence models

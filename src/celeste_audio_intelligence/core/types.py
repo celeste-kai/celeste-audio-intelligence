@@ -1,9 +1,8 @@
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Optional
 
+from celeste_core import AIResponse
 from pydantic import BaseModel, ConfigDict
-
-from celeste_audio_intelligence.core.enums import AudioIntelligenceProvider
 
 
 class AudioFile(BaseModel):
@@ -11,29 +10,11 @@ class AudioFile(BaseModel):
 
     model_config = ConfigDict(frozen=True)
 
-    file_path: Path  # Path to the audio file
-    mime_type: str  # MIME type of the audio file (e.g., "audio/mpeg", "audio/wav")
-    duration: Optional[float] = None  # Duration of the audio in seconds, if known
-    sample_rate: Optional[int] = None  # Sample rate of the audio, if known
-    channels: Optional[int] = None  # Number of audio channels, if known
+    file_path: Path
+    mime_type: str
+    duration: Optional[float] = None
+    sample_rate: Optional[int] = None
+    channels: Optional[int] = None
 
 
-class AIUsage(BaseModel):
-    """Token usage metrics for AI responses."""
-
-    model_config = ConfigDict(frozen=True)
-
-    input_tokens: int
-    output_tokens: int
-    total_tokens: int
-
-
-class AIResponse(BaseModel):
-    """Response from AI providers."""
-
-    model_config = ConfigDict(frozen=True)
-
-    content: str
-    usage: Optional[AIUsage] = None
-    provider: Optional[AudioIntelligenceProvider] = None
-    metadata: Dict[str, Any] = {}
+__all__ = ["AudioFile", "AIResponse"]

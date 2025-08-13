@@ -1,24 +1,24 @@
-from typing import Any, AsyncIterator, Optional
+from typing import Any, AsyncIterator
 
 import openai
-
-from celeste_audio_intelligence import BaseAudioClient
-from celeste_audio_intelligence.core.config import OPENAI_API_KEY
-from celeste_audio_intelligence.core.enums import (
-    AudioIntelligenceProvider,
-    OpenAIAudioModel,
-)
-from celeste_audio_intelligence.core.types import AIResponse, AIUsage, AudioFile
+from celeste_audio_intelligence.core.types import AudioFile
+from celeste_core import AIResponse, Provider
+from celeste_core.base.audio_client import BaseAudioClient
+from celeste_core.config.settings import settings
+from celeste_core.enums.capability import Capability
+from celeste_core.models.registry import supports
 
 
 class OpenAIAudioClient(BaseAudioClient):
     """OpenAI Audio Client for transcription using Whisper and GPT-4o models."""
 
-    def __init__(
-        self, model: str = OpenAIAudioModel.WHISPER.value, **kwargs: Any
-    ) -> None:
-        self.client = openai.AsyncOpenAI(api_key=OPENAI_API_KEY)
+    def __init__(self, model: str = "whisper-1", **kwargs: Any) -> None:
+        self.client = openai.AsyncOpenAI(api_key=settings.openai.api_key)
         self.model_name = model
+        if not supports(self.model_name, Capability.AUDIO_TRANSCRIPTION):
+            raise ValueError(
+                f"Model '{self.model_name}' does not support AUDIO_TRANSCRIPTION"
+            )
 
     async def generate_content(
         self, prompt: str, audio_file: AudioFile, **kwargs: Any
@@ -37,14 +37,10 @@ class OpenAIAudioClient(BaseAudioClient):
                 **kwargs,
             )
 
-        # Whisper doesn't provide usage metadata
-        usage = self.format_usage(None)
-
         # Return AIResponse object
         return AIResponse(
             content=response.text,
-            usage=usage,
-            provider=AudioIntelligenceProvider.OPENAI,
+            provider=Provider.OPENAI,
             metadata={
                 "model": self.model_name,
                 "prompt_used": prompt,  # Include prompt in metadata for transparency
@@ -58,11 +54,3 @@ class OpenAIAudioClient(BaseAudioClient):
 
         response = await self.generate_content(prompt, audio_file, **kwargs)
         yield response
-
-    def format_usage(self, usage_data: Any) -> Optional[AIUsage]:
-        """OpenAI transcription APIs don't provide token usage information."""
-        return AIUsage(
-            input_tokens=0,
-            output_tokens=0,
-            total_tokens=0,
-        )
