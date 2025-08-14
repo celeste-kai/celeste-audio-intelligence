@@ -2,11 +2,11 @@ from typing import Any, AsyncIterator
 
 import openai
 from celeste_audio_intelligence.core.types import AudioFile
-from celeste_core import AIResponse, Provider
+from celeste_core import AIResponse
 from celeste_core.base.audio_client import BaseAudioClient
 from celeste_core.config.settings import settings
 from celeste_core.enums.capability import Capability
-from celeste_core.enums.providers import Provider as CoreProvider
+from celeste_core.enums.providers import Provider
 from celeste_core.models.registry import supports
 
 
@@ -17,7 +17,7 @@ class OpenAIAudioClient(BaseAudioClient):
         self.client = openai.AsyncOpenAI(api_key=settings.openai.api_key)
         self.model_name = model
         if not supports(
-            CoreProvider.OPENAI, self.model_name, Capability.AUDIO_TRANSCRIPTION
+            Provider.OPENAI, self.model_name, Capability.AUDIO_TRANSCRIPTION
         ):
             raise ValueError(
                 f"Model '{self.model_name}' does not support AUDIO_TRANSCRIPTION"
