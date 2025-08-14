@@ -24,8 +24,19 @@ class GoogleAudioClient(BaseAudioClient):
         self, prompt: str, audio_file: AudioFile, **kwargs: Any
     ) -> AIResponse:
         """Generate text from a prompt and a list of documents."""
+        import io
 
-        audio = await self.client.aio.files.upload(file=audio_file.file_path)
+        # Handle both file path and bytes
+        if audio_file.data:
+            # Upload bytes directly
+            audio_buffer = io.BytesIO(audio_file.data)
+            audio_buffer.name = audio_file.filename or "audio.mp3"
+            audio = await self.client.aio.files.upload(file=audio_buffer)
+        elif audio_file.file_path:
+            # Upload from file path
+            audio = await self.client.aio.files.upload(file=audio_file.file_path)
+        else:
+            raise ValueError("AudioFile must have either data or file_path")
 
         response = await self.client.aio.models.generate_content(
             model=self.model_name,
