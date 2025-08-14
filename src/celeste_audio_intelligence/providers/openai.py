@@ -16,12 +16,10 @@ class OpenAIAudioClient(BaseAudioClient):
     def __init__(self, model: str = "whisper-1", **kwargs: Any) -> None:
         self.client = openai.AsyncOpenAI(api_key=settings.openai.api_key)
         self.model_name = model
-        if not supports(
+        # Non-raising validation; store support state for callers to inspect if needed
+        self.is_supported = supports(
             Provider.OPENAI, self.model_name, Capability.AUDIO_TRANSCRIPTION
-        ):
-            raise ValueError(
-                f"Model '{self.model_name}' does not support AUDIO_TRANSCRIPTION"
-            )
+        )
 
     async def generate_content(
         self, prompt: str, audio_file: AudioFile, **kwargs: Any
@@ -31,14 +29,30 @@ class OpenAIAudioClient(BaseAudioClient):
         For Whisper: prompt provides context for better accuracy
         For GPT-4o-transcribe: prompt can guide the transcription output
         """
+        import io
 
-        with open(audio_file.file_path, "rb") as audio:
+        # Handle both file path and bytes
+        if audio_file.data:
+            # Use bytes directly with BytesIO
+            audio_buffer = io.BytesIO(audio_file.data)
+            audio_buffer.name = audio_file.filename or "audio.mp3"
             response = await self.client.audio.transcriptions.create(
                 model=self.model_name,
-                file=audio,
+                file=audio_buffer,
                 prompt=prompt,  # Optional context prompt for better accuracy
                 **kwargs,
             )
+        elif audio_file.file_path:
+            # Use file path
+            with open(audio_file.file_path, "rb") as audio:
+                response = await self.client.audio.transcriptions.create(
+                    model=self.model_name,
+                    file=audio,
+                    prompt=prompt,  # Optional context prompt for better accuracy
+                    **kwargs,
+                )
+        else:
+            raise ValueError("AudioFile must have either data or file_path")
 
         # Return AIResponse object
         return AIResponse(

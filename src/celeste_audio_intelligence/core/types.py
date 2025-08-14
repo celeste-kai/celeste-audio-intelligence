@@ -10,8 +10,10 @@ class AudioFile(BaseModel):
 
     model_config = ConfigDict(frozen=True)
 
-    file_path: Path
-    mime_type: str
+    file_path: Optional[Path] = None
+    data: Optional[bytes] = None
+    filename: Optional[str] = None  # For APIs that need a filename
+    mime_type: str = "audio/mpeg"
     duration: Optional[float] = None
     sample_rate: Optional[int] = None
     channels: Optional[int] = None
