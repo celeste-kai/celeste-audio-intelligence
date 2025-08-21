@@ -18,4 +18,5 @@ dev = [
 ]
 
 [tool.uv.sources]
-celeste-core = { workspace = true }
+celeste-core = { git = "https://github.com/celeste-kai/celeste-core.git" }
+
