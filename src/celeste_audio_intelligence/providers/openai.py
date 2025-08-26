@@ -15,10 +15,10 @@ class OpenAIAudioClient(BaseAudioClient):
 
     def __init__(self, model: str = "whisper-1", **kwargs: Any) -> None:
         self.client = openai.AsyncOpenAI(api_key=settings.openai.api_key)
-        self.model_name = model
+        self.model = model
         # Non-raising validation; store support state for callers to inspect if needed
         self.is_supported = supports(
-            Provider.OPENAI, self.model_name, Capability.AUDIO_TRANSCRIPTION
+            Provider.OPENAI, self.model, Capability.AUDIO_TRANSCRIPTION
         )
 
     async def generate_content(
@@ -37,7 +37,7 @@ class OpenAIAudioClient(BaseAudioClient):
             audio_buffer = io.BytesIO(audio_file.data)
             audio_buffer.name = audio_file.filename or "audio.mp3"
             response = await self.client.audio.transcriptions.create(
-                model=self.model_name,
+                model=self.model,
                 file=audio_buffer,
                 prompt=prompt,  # Optional context prompt for better accuracy
                 **kwargs,
@@ -46,7 +46,7 @@ class OpenAIAudioClient(BaseAudioClient):
             # Use file path
             with open(audio_file.file_path, "rb") as audio:
                 response = await self.client.audio.transcriptions.create(
-                    model=self.model_name,
+                    model=self.model,
                     file=audio,
                     prompt=prompt,  # Optional context prompt for better accuracy
                     **kwargs,
@@ -59,7 +59,7 @@ class OpenAIAudioClient(BaseAudioClient):
             content=response.text,
             provider=Provider.OPENAI,
             metadata={
-                "model": self.model_name,
+                "model": self.model,
                 "prompt_used": prompt,  # Include prompt in metadata for transparency
             },
         )
