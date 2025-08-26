@@ -6,7 +6,11 @@ from pydantic import BaseModel, ConfigDict
 
 
 class AudioFile(BaseModel):
-    """Represents an audio file with metadata."""
+    """Represents an audio file with metadata.
+
+    TODO: This should be migrated to use AudioArtifact from celeste-core instead
+    of maintaining a separate AudioFile type. See celeste_core.types.AudioArtifact.
+    """
 
     model_config = ConfigDict(frozen=True)
 

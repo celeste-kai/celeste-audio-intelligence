@@ -8,12 +8,9 @@ from celeste_core import Provider
 from celeste_core.base.audio_client import BaseAudioClient
 from celeste_core.config.settings import settings
 
-__version__ = "0.1.0"
+from .mapping import PROVIDER_MAPPING
 
-SUPPORTED_PROVIDERS: set[Provider] = {
-    Provider.GOOGLE,
-    Provider.OPENAI,
-}
+__version__ = "0.1.0"
 
 
 def create_audio_client(provider: str | Provider, **kwargs: Any) -> BaseAudioClient:
@@ -32,22 +29,13 @@ def create_audio_client(provider: str | Provider, **kwargs: Any) -> BaseAudioCli
         provider if isinstance(provider, Provider) else Provider(provider)
     )
 
-    if provider_enum not in SUPPORTED_PROVIDERS:
-        supported = [p.value for p in SUPPORTED_PROVIDERS]
-        raise ValueError(
-            f"Unsupported provider: {provider_enum.value}. Supported: {supported}"
-        )
+    if provider_enum not in PROVIDER_MAPPING:
+        raise ValueError(f"Unsupported provider: {provider_enum}")
 
     # Validate environment for the chosen provider
     settings.validate_for_provider(provider_enum.value)
 
-    # Use mapping pattern for consistency
-    mapping = {
-        Provider.GOOGLE: (".providers.google", "GoogleAudioClient"),
-        Provider.OPENAI: (".providers.openai", "OpenAIAudioClient"),
-    }
-
-    module_path, class_name = mapping[provider_enum]
+    module_path, class_name = PROVIDER_MAPPING[provider_enum]
     module = __import__(
         f"celeste_audio_intelligence{module_path}", fromlist=[class_name]
     )
