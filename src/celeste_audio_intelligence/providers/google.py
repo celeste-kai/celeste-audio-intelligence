@@ -39,7 +39,7 @@ class GoogleAudioClient(BaseAudioClient):
             raise ValueError("AudioFile must have either data or file_path")
 
         response = await self.client.aio.models.generate_content(
-            model=self.model_name,
+            model=self.model,
             contents=[prompt, audio],
             **kwargs,
         )
@@ -48,7 +48,7 @@ class GoogleAudioClient(BaseAudioClient):
         return AIResponse(
             content=response.text,
             provider=Provider.GOOGLE,
-            metadata={"model": self.model_name},
+            metadata={"model": self.model},
         )
 
     async def stream_generate_content(
@@ -60,13 +60,13 @@ class GoogleAudioClient(BaseAudioClient):
         audio = await self.client.aio.files.upload(file=audio_file.file_path)
 
         async for chunk in await self.client.aio.models.generate_content_stream(
-            model=self.model_name, contents=[prompt, audio], **kwargs
+            model=self.model, contents=[prompt, audio], **kwargs
         ):
             if chunk.text:  # Only yield if there's actual content
                 yield AIResponse(
                     content=chunk.text,
                     provider=Provider.GOOGLE,
-                    metadata={"model": self.model_name, "is_stream_chunk": True},
+                    metadata={"model": self.model, "is_stream_chunk": True},
                 )
 
         # suppress final usage-only emission
