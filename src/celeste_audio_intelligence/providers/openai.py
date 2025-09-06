@@ -1,3 +1,4 @@
+import io
 from collections.abc import AsyncIterator
 from typing import Any
 
@@ -27,8 +28,6 @@ class OpenAIAudioClient(BaseAudioClient):
         For Whisper: prompt provides context for better accuracy
         For GPT-4o-transcribe: prompt can guide the transcription output
         """
-        import io
-
         # Handle both file path and bytes
         if audio_file.data:
             # Use bytes directly with BytesIO

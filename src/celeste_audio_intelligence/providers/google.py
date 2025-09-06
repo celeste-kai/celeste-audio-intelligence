@@ -1,3 +1,4 @@
+import io
 from collections.abc import AsyncIterator
 from typing import Any
 
@@ -20,8 +21,6 @@ class GoogleAudioClient(BaseAudioClient):
 
     async def generate_content(self, prompt: str, audio_file: AudioArtifact, **kwargs: Any) -> AIResponse:
         """Generate text from a prompt and a list of documents."""
-        import io
-
         # Handle both file path and bytes
         if audio_file.data:
             # Upload bytes directly
