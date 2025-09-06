@@ -25,9 +25,7 @@ def create_audio_client(provider: str | Provider, **kwargs: Any) -> BaseAudioCli
         An instance of an audio client
     """
     # Normalize to enum
-    provider_enum: Provider = (
-        provider if isinstance(provider, Provider) else Provider(provider)
-    )
+    provider_enum: Provider = provider if isinstance(provider, Provider) else Provider(provider)
 
     if provider_enum not in PROVIDER_MAPPING:
         raise ValueError(f"Unsupported provider: {provider_enum}")
@@ -36,9 +34,7 @@ def create_audio_client(provider: str | Provider, **kwargs: Any) -> BaseAudioCli
     settings.validate_for_provider(provider_enum.value)
 
     module_path, class_name = PROVIDER_MAPPING[provider_enum]
-    module = __import__(
-        f"celeste_audio_intelligence{module_path}", fromlist=[class_name]
-    )
+    module = __import__(f"celeste_audio_intelligence{module_path}", fromlist=[class_name])
     audio_class = getattr(module, class_name)
     return audio_class(**kwargs)
 
