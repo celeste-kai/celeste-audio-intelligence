@@ -36,16 +36,17 @@
 !uv add celeste-audio-intelligence  # Coming soon to PyPI
 
 # Process audio with AI
-from celeste_audio_intelligence import create_audio_client, AudioFile
-from celeste_audio_intelligence.core.enums import GeminiModel, AudioMimeType
+from celeste_audio_intelligence import create_audio_client
+from celeste_audio_intelligence.core.enums import AudioMimeType
+from celeste_core import AudioArtifact
 
 # Create a client (Google Gemini is implemented)
-client = create_audio_client("google", model=GeminiModel.FLASH)
+client = create_audio_client("google", model="gemini-2.5-flash")
 
 # Create an audio file reference
-audio_file = AudioFile(
-    file_path=Path("audio.mp3"),
-    mime_type=AudioMimeType.MP3
+audio_file = AudioArtifact(
+    path="audio.mp3",
+    mime_type=AudioMimeType.MP3.value
 )
 
 # Ask questions about the audio
@@ -158,7 +159,7 @@ streamlit run example.py
 ## 🗺️ Roadmap
 
 ### Celeste-Audio-Intelligence Next Steps
-- [x] 📝 **Core Types** - AudioFile and AIResponse
+- [x] 📝 **Core Types** - AudioArtifact and AIResponse
 - [ ] 📊 **Usage Accounting** - Deferred; will be reintroduced later across modalities
 - [x] 🌈 **Google Provider** - Gemini 2.5 models implementation
 - [x] 🤖 **OpenAI Provider** - Whisper and GPT-4o support

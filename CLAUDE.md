@@ -20,8 +20,7 @@ src/celeste_audio_intelligence/
 ├── __init__.py                 # Main factory function
 ├── mapping.py                  # Provider-to-class mapping
 ├── core/
-│   ├── enums.py               # AudioMimeType, model enums
-│   └── types.py               # AudioFile type definitions
+│   └── enums.py               # AudioMimeType, model enums
 └── providers/
     ├── google.py              # Google Gemini implementation
     └── openai.py              # OpenAI Whisper implementation
@@ -56,7 +55,7 @@ pre-commit run --all-files     # Run pre-commit hooks
 - Maps to Provider enum in `mapping.py`
 
 ### Audio File Handling
-- Uses `AudioFile` type with `file_path` and `mime_type` parameters
+- Uses `AudioArtifact` type from celeste-core with `path` and `data` parameters
 - Supports multiple formats: MP3, WAV, FLAC, AAC, OGG, AIFF
 - Handles both file paths and raw bytes
 
