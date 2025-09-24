@@ -29,24 +29,9 @@ class GoogleAudioClient(BaseAudioClient):
         **kwargs: Any,
     ) -> AIResponse:
         """Generate text from a prompt and a list of documents."""
-        # Handle both file path and bytes
-        if audio_file.data:
-            # Upload bytes directly
-            audio_buffer = io.BytesIO(audio_file.data)
-            audio_buffer.name = "audio.mp3"  # Default filename for upload
-            audio = await self.client.aio.files.upload(file=audio_buffer)
-        elif audio_file.path:
-            # Upload from file path
-            audio = await self.client.aio.files.upload(file=audio_file.path)
-        else:
-            raise ValueError("AudioArtifact must have either data or path")
+        audio = await self._upload_audio(audio_file)
 
-        request_kwargs = dict(kwargs)
-        if structured_output is not None:
-            request_kwargs["config"] = {
-                "response_mime_type": "application/json",
-                "response_schema": structured_output,
-            }
+        request_kwargs = self._prepare_request_config(structured_output, kwargs)
 
         response = await self.client.aio.models.generate_content(
             model=self.model,
@@ -70,15 +55,9 @@ class GoogleAudioClient(BaseAudioClient):
     ) -> AsyncIterator[AIResponse]:
         """Streams the response chunk by chunk."""
 
-        # Upload the audio file
-        audio = await self.client.aio.files.upload(file=audio_file.path)
+        audio = await self._upload_audio(audio_file)
 
-        request_kwargs = dict(kwargs)
-        if structured_output is not None:
-            request_kwargs["config"] = {
-                "response_mime_type": "application/json",
-                "response_schema": structured_output,
-            }
+        request_kwargs = self._prepare_request_config(structured_output, kwargs)
 
         async for chunk in await self.client.aio.models.generate_content_stream(
             model=self.model, contents=[prompt, audio], **request_kwargs
@@ -96,3 +75,33 @@ class GoogleAudioClient(BaseAudioClient):
             )
 
         # suppress final usage-only emission
+
+    async def _upload_audio(self, audio_file: AudioArtifact) -> Any:
+        """Upload audio file from bytes or path."""
+
+        if audio_file.data:
+            audio_buffer = io.BytesIO(audio_file.data)
+            audio_buffer.name = "audio.mp3"
+            return await self.client.aio.files.upload(file=audio_buffer)
+
+        if audio_file.path:
+            return await self.client.aio.files.upload(file=audio_file.path)
+
+        raise ValueError("AudioArtifact must have either data or path")
+
+    def _prepare_request_config(
+        self,
+        structured_output: BaseModel | list[BaseModel] | None,
+        kwargs: dict[str, Any],
+    ) -> dict[str, Any]:
+        """Prepare request kwargs including structured output configuration."""
+
+        request_kwargs = dict(kwargs)
+
+        if structured_output is not None:
+            request_kwargs["config"] = {
+                "response_mime_type": "application/json",
+                "response_schema": structured_output,
+            }
+
+        return request_kwargs
